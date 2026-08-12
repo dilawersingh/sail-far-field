@@ -1,0 +1,24 @@
+{
+  "paths": {
+    "save": [
+      "results/Transformers/nature_publication/diligence/revisions/experimental"
+    ],
+    "target_images": [
+      "targets"
+    ],
+    "camera_captures": [
+      "results/Transformers/nature_publication/diligence/revisions/experimental/camera_captures"
+    ]
+  },
+  "dataset_name": "Synthetic - PyTorch",
+  "experiment": {
+    "name": "Experimental Comparison",
+    "training_type": "Transformer",
+    "description": "Compare performance for camera captures using regular GD and GD+CITL for multilevel phase holograms.",
+    "comparison_mode": "multilevel",
+    "frame_sampling_rate": 30,
+    "fps_gif": 4,
+    "overwrite": false,
+    "make_video": false
+  }
+}

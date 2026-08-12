@@ -1,0 +1,77 @@
+{
+  "_readme": "PORTED to the method-template format read by replay_holograms.py. This reproduces the July 2026 run (replay_simulation_20260724_174615) exactly: same four methods, same 750-iteration sources under GD+CITL/simulations, same two conditions, same 18 targets, 144 captures. Nothing about which hologram is displayed has changed; only the way the source is expressed moved from a hardcoded METHOD_SOURCES dict in the script into this file. The original run directory holds its own copy of the pre-port config, so provenance for the published captures is preserved there regardless of this file. allow_newest is deliberately absent everywhere: the original raised on more than one match and that strictness is worth keeping for a run whose numbers are already in a manuscript.",
+  "paths": {
+    "capture_root": [
+      "results/Self-Attention/multilevel/experiments/replay_simulation"
+    ],
+    "sim_comparison": [
+      "results/GD+CITL/simulations"
+    ],
+    "batched_sim": [
+      "results/Self-Attention/multilevel/simulations/batched"
+    ],
+    "exposure_settings": [
+      "code/configurations/citl/exposure_settings.json"
+    ]
+  },
+  "dataset_name": "Simulation Hologram Replay",
+  "experiment": {
+    "description": "Experimental capture of simulation-generated holograms (GS, GD, per-target transformer, batched transformer) under both physics conditions, at the published 750-iteration operating point. Replay only, no training, no camera-in-the-loop.",
+    "overwrite": false
+  },
+  "run": {
+    "_comment": "750 iterations matches the count used by GD+CITL, SAIL and batched SAIL on the bench, so the experimental columns are on equal footing. The published simulation table quotes 1500 for GS/GD separately; that is a different comparison and not what this capture is for. Capture keys are decoupled from on-disk folders: transformer_per_target reads outputs/transformer/ (per-target model, written by evaluate_transformer_once) and transformer_batched reads the batched 18-target model. These replaced the older opaque transformer/shared_model pair, which said nothing about the training regime.",
+    "height": 1000,
+    "width": 1000,
+    "conditions": [
+      "ideal",
+      "faithful"
+    ],
+    "target_subset": null,
+    "methods": [
+      {
+        "name": "gs",
+        "base": "sim_comparison",
+        "relative": "simulation_comparison_{condition}/{stem}_simulation_comparison*/outputs/gs/gs_iter_750_phase.npy"
+      },
+      {
+        "name": "gd",
+        "base": "sim_comparison",
+        "relative": "simulation_comparison_{condition}/{stem}_simulation_comparison*/outputs/gd/gd_iter_750_phase.npy"
+      },
+      {
+        "name": "transformer_per_target",
+        "base": "sim_comparison",
+        "relative": "simulation_comparison_{condition}/{stem}_simulation_comparison*/outputs/transformer/transformer_phase.npy"
+      },
+      {
+        "name": "transformer_batched",
+        "base": "batched_sim",
+        "relative": "1000px_P500_B18_{condition}_18imgs*/outputs/{stem}_best_phase.npy"
+      }
+    ]
+  },
+  "hardware": {
+    "_comment": "Identical to sail.json / camera_feedback_gs_gd.json / batched_sail.json. The rig is locked and calibrated; these values must not diverge from the CITL runs or the captures stop being comparable. dll_path is a LIST: the original hardcoded one user's path and would not have loaded the EDSDK on the other machine.",
+    "slm_shape": [
+      1080,
+      1920
+    ],
+    "settle_time_s": 0.3,
+    "capture_timeout_s": 15.0,
+    "capture_settle_s": 0.5,
+    "dll_path": [
+      "C:/path/to/EDSDK.dll"
+    ],
+    "calibration_mode": "manual",
+    "manual_alignment": {
+      "x0": 1083,
+      "y0": 129,
+      "w": 3267,
+      "h": 3265,
+      "rotation_deg": -0.06
+    },
+    "saturation_level": 250,
+    "saturation_warn_frac": 0.002
+  }
+}

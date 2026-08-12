@@ -1,0 +1,57 @@
+{
+  "paths": {
+    "fashion_mnist_data": [
+      "datasets/FashionMNIST"
+    ],
+    "mnist_data": [
+      "datasets/MNIST/mnist.pkl"
+    ],
+    "image": [
+      "targets/usaf.png"
+    ],
+    "multiple_images": [
+      "targets"
+    ],
+    "model_base_path": [
+      "results/Transformers/hologram_generation/synthetic/pytorch/1000px/training"
+    ],
+    "save": [
+      "results/Self-Attention/multilevel/simulations/per_target/1000px_P500_B1_faithful"
+    ]
+  },
+  "data": {
+    "filename": "mnist.pkl",
+    "validation_split": 0.2
+  },
+  "dataset_name": "Synthetic - PyTorch",
+  "experiment": {
+    "name": "",
+    "training_type": "Transformer",
+    "description": "Per-target hologram generation using self-attention.",
+    "frame_sampling_rate": 100,
+    "fps_gif": 4,
+    "overwrite": false,
+    "make_video": false,
+    "make_vortices_video": false,
+    "load_model": false
+  },
+  "hyperparameters": {
+    "batch_size": 1,
+    "learning_rate": 0.0001,
+    "epochs": 10000,
+    "height": 1000,
+    "width": 1000,
+    "global_patch": 500,
+    "heads": 16,
+    "layers": 4,
+    "subselection": 1,
+    "embedding_dimension": 256,
+    "feed_forward_dim": 1024,
+    "dropout": 0.0,
+    "pre_norm": true,
+    "pad_factor": 2,
+    "apply_sinc": true,
+    "fill_factor": 0.91,
+    "fill_is_areal": true
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "paths": {
+    "fashion_mnist_data": [
+      "datasets/FashionMNIST"
+    ],
+    "mnist_data": [
+      "datasets/MNIST/mnist.pkl"
+    ],
+    "image": [
+      "targets/chicago.jpg"
+    ],
+    "multiple_images": [
+      "targets"
+    ],
+    "model_base_path": [
+      "results/Transformers/hologram_generation/synthetic/pytorch/1000px/training"
+    ],
+    "save": [
+      "results/Transformers/hologram_generation/publication/training/1000px"
+    ]
+  },
+  "data": {
+    "filename": "mnist.pkl",
+    "validation_split": 0.2
+  },
+  "dataset_name": "Synthetic - PyTorch",
+  "experiment": {
+    "name": "image_ovefit_model (1000x1000)",
+    "training_type": "Transformer",
+    "description": "Scaling to PyTorch and attempting to generalize the hologram generation for a given 28x28 pixel array. The test would be to feed in a desired intensity from MNIST and see if it is able to create the phase hologram of it.",
+    "frame_sampling_rate": 1500,
+    "fps_gif": 4,
+    "overwrite": false,
+    "make_video": false,
+    "make_vortices_video": false,
+    "load_model": false
+  },
+  "hyperparameters": {
+    "batch_size": 1,
+    "learning_rate": 0.0001,
+    "epochs": 150000,
+    "height": 1000,
+    "width": 1000,
+    "coarse_patch": 100,
+    "fine_patch": 50,
+    "heads": 16,
+    "layers": 4,
+    "subselection": 1,
+    "embedding_dimension": 256,
+    "feed_forward_dim": 1024,
+    "dropout": 0.0,
+    "pre_norm": true
+  }
+}

@@ -1,0 +1,142 @@
+{
+  "_readme": "FULL re-capture: every hologram the manuscript, the rebuttal or any reviewer question could ask about, photographed in one session on one alignment. 14 methods x 2 conditions x 18 targets = 504 captures, roughly 30 minutes of rig time at the July run's measured 3.3 s per capture. The point is not the new methods alone; it is that after this run every bench number in the paper comes from a single rig state, so no comparison in it can be attributed to alignment drift. Includes sail_plus even though SAIL+ is dropped from the manuscript: capturing it costs two minutes now and cannot be recovered once the aberration sweep disturbs the rig. Includes the GS+CITL and GD+CITL arms, whose stored camera-feedback phases replay exactly like any other; note that a CITL phase was tuned against the rig as it stood in July, so replaying it today measures how that solution holds up on today's rig, which is precisely the comparison wanted.",
+  "paths": {
+    "capture_root": [
+      "results/Self-Attention/multilevel/experiments/replay_converged"
+    ],
+    "sweep_10k": [
+      "results/Self-Attention/multilevel/simulations"
+    ],
+    "batched_sim": [
+      "results/Self-Attention/multilevel/simulations/batched"
+    ],
+    "experiments": [
+      "results/Self-Attention/multilevel/experiments"
+    ],
+    "gdcitl_experiments": [
+      "results/GD+CITL/experiments"
+    ],
+    "exposure_settings": [
+      "code/configurations/citl/exposure_settings.json"
+    ]
+  },
+  "dataset_name": "Full Hologram Replay, One Alignment",
+  "experiment": {
+    "description": "Experimental capture of every stored phase pattern under both physics conditions: GS and GD at the published operating point and at convergence, both transformers, SAIL, SAIL+, both batched SAIL budgets, and all four GS/GD camera-in-the-loop arms. Replay only, no training, no camera-in-the-loop. Exists to put every bench number in the paper on one rig state, and to test whether the simulation advantage GD gains between 750 and 10,000 iterations survives contact with real optics.",
+    "overwrite": false
+  },
+  "run": {
+    "_comment": "gs_750/gd_750 come from the SAME 10k sweep as gs_10000/gd_10000, not from the July 2026 sweep, so the operating-point-versus-converged comparison sits inside one run and one seed policy. CITL keys keep the historical *_warm spelling to match sail_scored.json; the manuscript renders that as 'simulation-seeded' and only the display text changes. allow_newest is set only where a tree genuinely holds several timestamped runs per target. A method may carry a 'targets' list to restrict it to a subset of stems; nothing uses that here. sail_no_dc is deliberately excluded: it exists for alley and moon only, and a two-target ablation is not worth a column in this dataset.",
+    "height": 1000,
+    "width": 1000,
+    "conditions": [
+      "ideal",
+      "faithful"
+    ],
+    "target_subset": null,
+    "methods": [
+      {
+        "name": "gs_750",
+        "base": "sweep_10k",
+        "relative": "simulation_comparison_{condition}_10k/{stem}_simulation_comparison_10k*/outputs/gs/gs_iter_750_phase.npy"
+      },
+      {
+        "name": "gs_10000",
+        "base": "sweep_10k",
+        "relative": "simulation_comparison_{condition}_10k/{stem}_simulation_comparison_10k*/outputs/gs/gs_iter_10000_phase.npy"
+      },
+      {
+        "name": "gd_750",
+        "base": "sweep_10k",
+        "relative": "simulation_comparison_{condition}_10k/{stem}_simulation_comparison_10k*/outputs/gd/gd_iter_750_phase.npy"
+      },
+      {
+        "name": "gd_10000",
+        "base": "sweep_10k",
+        "relative": "simulation_comparison_{condition}_10k/{stem}_simulation_comparison_10k*/outputs/gd/gd_iter_10000_phase.npy"
+      },
+      {
+        "name": "transformer_per_target",
+        "base": "sweep_10k",
+        "relative": "simulation_comparison_{condition}_10k/{stem}_simulation_comparison_10k*/outputs/transformer/transformer_phase.npy"
+      },
+      {
+        "name": "transformer_batched",
+        "base": "batched_sim",
+        "relative": "1000px_P500_B18_{condition}_18imgs_*/outputs/{stem}_best_phase.npy",
+        "allow_newest": true
+      },
+      {
+        "name": "sail",
+        "base": "experiments",
+        "relative": "sail/{condition}/{stem}_{condition}_*/outputs/best_phase.npy",
+        "allow_newest": true
+      },
+      {
+        "name": "sail_plus",
+        "base": "experiments",
+        "relative": "sail+/{condition}/{stem}_{condition}_*/outputs/best_phase.npy",
+        "allow_newest": true
+      },
+      {
+        "name": "batched_sail_750",
+        "base": "experiments",
+        "relative": "batched_sail/{condition}/batched_{condition}_*/targets/{stem}/outputs/best_phase.npy",
+        "allow_newest": true
+      },
+      {
+        "name": "batched_sail_2000",
+        "base": "experiments",
+        "relative": "batched_sail_2k/{condition}/batched_{condition}_*/targets/{stem}/outputs/best_phase.npy",
+        "allow_newest": true
+      },
+      {
+        "name": "gs_citl_random",
+        "base": "gdcitl_experiments",
+        "relative": "random_init/citl_gs_gd_{condition}/{stem}_{condition}_*/outputs/gs_camera_feedback_phase.npy",
+        "allow_newest": true
+      },
+      {
+        "name": "gs_citl_warm",
+        "base": "gdcitl_experiments",
+        "relative": "warm_start/citl_gs_gd_{condition}/{stem}_{condition}_*/outputs/gs_camera_feedback_phase.npy",
+        "allow_newest": true
+      },
+      {
+        "name": "gd_citl_random",
+        "base": "gdcitl_experiments",
+        "relative": "random_init/citl_gs_gd_{condition}/{stem}_{condition}_*/outputs/gd_camera_feedback_phase.npy",
+        "allow_newest": true
+      },
+      {
+        "name": "gd_citl_warm",
+        "base": "gdcitl_experiments",
+        "relative": "warm_start/citl_gs_gd_{condition}/{stem}_{condition}_*/outputs/gd_camera_feedback_phase.npy",
+        "allow_newest": true
+      }
+    ]
+  },
+  "hardware": {
+    "_comment": "Identical to sail.json / camera_feedback_gs_gd.json / batched_sail.json. The rig is locked and calibrated; these values must not diverge from the CITL runs or the captures stop being comparable. saturation_warn_frac triggers a warning when that fraction of ROI pixels sits at or above saturation_level: a converged hologram concentrates more energy than the 750-iteration one it is compared against, at an exposure metered for the latter, so clipping is a live risk and a clipped capture makes PSNR meaningless.",
+    "slm_shape": [
+      1080,
+      1920
+    ],
+    "settle_time_s": 0.3,
+    "capture_timeout_s": 15.0,
+    "capture_settle_s": 0.5,
+    "dll_path": [
+      "C:/path/to/EDSDK.dll"
+    ],
+    "calibration_mode": "manual",
+    "manual_alignment": {
+      "x0": 1083,
+      "y0": 129,
+      "w": 3267,
+      "h": 3265,
+      "rotation_deg": -0.06
+    },
+    "saturation_level": 250,
+    "saturation_warn_frac": 0.002
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "_readme": "PATCH-SIZE SWEEP for per-target HoT hologram generation. Run with patch_sweep_multilevel_training_1000x1000.py. Three nested loops: physics condition -> patch size -> image, saving to <save_base>/<physics_name>/P<patch>/<stem>__<timestamp>. THE CONTROL IS P500 / ideal, which must reproduce the published 52.30 dB on alley -- check it first, before reading anything else. WHAT THIS TESTS: patch_embed and head share weights across tokens, so shrinking the patch makes the big linears CHEAPER while widening the effective bottleneck (tokens x d_model). P500 = 4 tokens, 1024-dim bottleneck, 195.7M params. P125 = 64 tokens, 16384-dim, 15.2M. P50 = 400 tokens, 102400-dim, 5.2M. If quality holds or improves as the model shrinks 38x, that answers R1.6 (scalability and patch partitioning) directly and makes the attention maps informative -- at 4 tokens there is little structure to visualise. COST: per-epoch time is roughly FLAT across patch sizes, because patch_embed and head cost (H/p)^2 * p^2 * d = H^2 * d regardless of p. Only the encoder grows (attention as T^2), adding ~30% at P50. So the sweep costs about N x a single run. IF A FINER PATCH WINS: the manuscript's experimental results were all collected at P500, so this is simulation-only evidence about scaling, not a drop-in replacement configuration. Decide that framing before the numbers exist.",
+  "paths": {
+    "save_base": [
+      "results/Self-Attention/multilevel/simulations/patch_sweep"
+    ],
+    "multiple_images": [
+      "targets"
+    ]
+  },
+  "dataset_name": "Patch Sweep",
+  "experiment": {
+    "description": "Patch-size sweep: per-target HoT hologram generation across patch sizes and physics conditions.",
+    "overwrite": false
+  },
+  "run": {
+    "_comment": "patch_sizes must divide height and width; the preflight fails loudly otherwise. Divisors of 1000 in a useful range: 500, 250, 200, 125, 100, 50. 500 MUST stay in the list -- it is the control, and p=500/ideal/alley must come back at 52.30 dB (the script prints a CONTROL CHECK line when it hits that combination; if it misses, stop and fix before reading anything else). target_subset spans easy and hard: moon and flower score high under GD, street and cat low, usaf-style detail is the hardest -- add 'usaf' if you want the extreme. Omit target_subset entirely to run all 18. RANKING IS BY PSNR, not training loss: loss is comparable across patch sizes here (same objective, same normalisation) but PSNR is what the manuscript reports and what 52.30 dB is measured in.",
+    "height": 1000,
+    "width": 1000,
+    "patch_sizes": [
+      500,
+      250,
+      125,
+      50
+    ]
+  },
+  "architecture": {
+    "_comment": "Copied verbatim from patch500_B1_multilevel_training_1000x1000.json so P500 reproduces the published model exactly. d_model stays fixed across the sweep: the point is to vary the PATCH, and holding everything else constant is what makes the comparison clean. Note that d_model fixed means the effective bottleneck (tokens x d_model) grows as the patch shrinks -- that is the mechanism being tested, not a confound.",
+    "embedding_dimension": 256,
+    "heads": 16,
+    "layers": 4,
+    "feed_forward_dim": 1024,
+    "dropout": 0.0,
+    "pre_norm": true
+  },
+  "hyperparameters": {
+    "_comment": "Identical to the published per-target protocol: 10000 epochs, AdamW lr 1e-4 with weight_decay 1e-4, lr *= 0.95 every 1000 epochs, batch size 1. Shared across all patch sizes DELIBERATELY -- a per-patch learning rate would confound 'this patch size is better' with 'this patch size was tuned better'. If a small patch looks LR-limited rather than capacity-limited, that is a separate probe, not a silent change here.",
+    "batch_size": 1,
+    "learning_rate": 0.0001,
+    "weight_decay": 0.0001,
+    "epochs": 10000,
+    "lr_decay_every": 1000,
+    "lr_decay_factor": 0.95
+  },
+  "conditions": [
+    {
+      "physics_name": "ideal",
+      "pad_factor": 1,
+      "apply_sinc": false,
+      "fill_factor": 1,
+      "fill_is_areal": true,
+      "_comment": "The published 52.30 dB reference is an ideal-condition number, so this is where the P500 control is validated. Run ideal FIRST."
+    }
+  ]
+}

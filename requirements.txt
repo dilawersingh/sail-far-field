@@ -1,0 +1,23 @@
+# Direct dependencies only, with lower bounds rather than pins.
+#
+# Deliberately NOT a `pip freeze`. A frozen environment pins every transitive
+# dependency and bakes in platform-specific builds - a torch wheel tagged +cu121
+# will not install on a machine without that CUDA version, or on macOS at all,
+# which would defeat the point of this deposit running anywhere. These are the
+# packages actually imported by the code, at versions we know work.
+#
+#     pip install -r requirements.txt
+#
+# torch: the default CPU build is sufficient for the simulation demonstration
+# and the analysis rebuild. A GPU makes re-training faster but is not required.
+# For a CUDA build, follow the selector at
+# https://pytorch.org/get-started/locally/ instead of this file.
+
+numpy>=1.24
+scipy>=1.10
+torch>=2.0
+matplotlib>=3.7
+Pillow>=10.0
+scikit-image>=0.21
+opencv-python>=4.8
+tqdm>=4.65

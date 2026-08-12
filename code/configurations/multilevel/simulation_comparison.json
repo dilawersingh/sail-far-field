@@ -1,0 +1,97 @@
+{
+  "paths": {
+    "save": [
+      "results/GD+CITL/simulations/simulation_comparison_faithful"
+    ],
+    "multiple_images": [
+      "targets"
+    ],
+    "model_base_path": [
+      "results/Self-Attention/multilevel/simulations/per_target/1000px_P500_B1_faithful"
+    ]
+  },
+  "dataset_name": "Synthetic - PyTorch",
+  "experiment": {
+    "name": "simulation_comparison (Transformer GS GD)",
+    "training_type": "Transformer",
+    "description": "Revision Plan: intensity-target GS/GD. Re-runs GS/GD under both the published amplitude-target formulation and a new intensity-target formulation, side by side, to test whether the choice of optimization target domain disadvantages these classical baselines, a question raised in review. target_formulations=['amplitude','intensity'] below: 'amplitude' is listed first so its outputs land on the same paths the published pipeline uses (gs/, gd/, target_amplitude.npy); 'intensity' is additional and writes to namespaced sibling paths (gs_intensity_target/, gd_intensity_target/, _intensity_target/).",
+    "comparison_mode": "multilevel",
+    "frame_sampling_rate": 30,
+    "fps_gif": 4,
+    "overwrite": false,
+    "make_video": false,
+    "make_vortices_video": false,
+    "load_model": true,
+    "target_formulations": [
+      "amplitude",
+      "intensity"
+    ]
+  },
+  "slm_shape": [
+    1000,
+    1000
+  ],
+  "physics": {
+    "pad_factor": 2,
+    "apply_sinc": true,
+    "fill_factor": 0.91,
+    "fill_is_areal": true
+  },
+  "gs": {
+    "iterations_list": [
+      10,
+      25,
+      50,
+      75,
+      100,
+      200,
+      250,
+      300,
+      500,
+      750,
+      1500
+    ],
+    "init_phase": "random",
+    "lowpass": false,
+    "lpf_sigma": 0.08,
+    "add_carrier": false,
+    "show": false
+  },
+  "gd": {
+    "iterations_list": [
+      10,
+      25,
+      50,
+      75,
+      100,
+      200,
+      250,
+      300,
+      500,
+      750,
+      1500
+    ],
+    "init_phase": "random",
+    "lr": 0.03,
+    "optimizer_name": "adam",
+    "loss_type": "mse01",
+    "tv_weight": 0.0,
+    "lowpass": false,
+    "lpf_sigma": 0.08,
+    "add_carrier": false,
+    "show": false,
+    "log_every": false
+  },
+  "hyperparameters": {
+    "height": 1000,
+    "width": 1000,
+    "coarse_patch": 500,
+    "heads": 16,
+    "layers": 4,
+    "subselection": 1,
+    "embedding_dimension": 256,
+    "feed_forward_dim": 1024,
+    "dropout": 0.0,
+    "pre_norm": true
+  }
+}

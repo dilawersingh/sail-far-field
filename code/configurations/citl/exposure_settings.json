@@ -1,0 +1,99 @@
+{
+  "_readme": "Exposure settings, one entry per target image (keyed by filename stem, no extension). Reused as-is by GS, GD, SAIL, and SAIL+ driver scripts -- exposure depends on the physical target/scene, not on which hologram-generation method is running. Values here are human-readable (what you read off the camera's own screen while metering by hand); a separate lookup step converts these to the EDSDK hex codes canon_camera.py's set_iso/set_tv actually need -- not built yet, flagged separately. No Av field: bare sensor, no lens, aperture isn't controllable. ISO: set 'default_iso' once at the top -- most targets should leave their own 'iso' as null to inherit it. Only fill in a target's own 'iso' if that specific target needs to override the default (e.g. a dimly-lit reconstruction needing more gain).",
+  "laser_power_mw": 0.6,
+  "default_iso": "100",
+  "iso_unit": "ISO number, e.g. 800",
+  "tv_unit": "shutter speed as a fraction or seconds, e.g. 1/45 or 2\"",
+  "targets": {
+    "alley": {
+      "iso": null,
+      "tv": "1/60",
+      "notes": ""
+    },
+    "cat": {
+      "iso": null,
+      "tv": "1/80",
+      "notes": ""
+    },
+    "cat2": {
+      "iso": null,
+      "tv": "1/125",
+      "notes": ""
+    },
+    "custom": {
+      "iso": null,
+      "tv": "1/30",
+      "notes": ""
+    },
+    "face_dots": {
+      "iso": null,
+      "tv": "1/80",
+      "notes": ""
+    },
+    "face": {
+      "iso": null,
+      "tv": "1/50",
+      "notes": ""
+    },
+    "flower": {
+      "iso": null,
+      "tv": "1/60",
+      "notes": ""
+    },
+    "guy": {
+      "iso": null,
+      "tv": "1/80",
+      "notes": ""
+    },
+    "landscape": {
+      "iso": null,
+      "tv": "1/50",
+      "notes": ""
+    },
+    "microphone": {
+      "iso": null,
+      "tv": "1/250",
+      "notes": ""
+    },
+    "moon": {
+      "iso": null,
+      "tv": "1/800",
+      "notes": ""
+    },
+    "nyc": {
+      "iso": null,
+      "tv": "1/80",
+      "notes": ""
+    },
+    "shed": {
+      "iso": null,
+      "tv": "1/40",
+      "notes": ""
+    },
+    "street": {
+      "iso": null,
+      "tv": "1/60",
+      "notes": ""
+    },
+    "tram": {
+      "iso": null,
+      "tv": "1/80",
+      "notes": ""
+    },
+    "usaf_reversed": {
+      "iso": null,
+      "tv": "1/100",
+      "notes": ""
+    },
+    "usaf": {
+      "iso": null,
+      "tv": "1/40",
+      "notes": ""
+    },
+    "watering": {
+      "iso": null,
+      "tv": "1/60",
+      "notes": ""
+    }
+  }
+}

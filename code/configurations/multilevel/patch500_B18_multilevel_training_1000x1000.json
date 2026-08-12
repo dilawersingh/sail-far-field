@@ -1,0 +1,46 @@
+{
+  "paths": {
+    "image": [
+      "targets/chicago.jpg"
+    ],
+    "multiple_images": [
+      "targets"
+    ],
+    "save": [
+      "results/Self-Attention/multilevel/simulations/batched"
+    ]
+  },
+  "dataset_name": "Synthetic - PyTorch",
+  "experiment": {
+    "name": "1000px_P500_B18_faithful",
+    "training_type": "Transformer",
+    "description": "Determining if a batch of 18 across 18 targets can perform comparable to per-target optimization.",
+    "frame_sampling_rate": 10,
+    "fps_gif": 4,
+    "overwrite": false,
+    "make_video": false,
+    "make_vortices_video": false,
+    "load_model": false
+  },
+  "physics": {
+    "pad_factor": 2,
+    "apply_sinc": true,
+    "fill_factor": 0.91,
+    "fill_is_areal": true
+  },
+  "hyperparameters": {
+    "batch_size": 18,
+    "learning_rate": 0.0001,
+    "epochs": 10000,
+    "height": 1000,
+    "width": 1000,
+    "coarse_patch": 500,
+    "heads": 16,
+    "layers": 4,
+    "subselection": 1,
+    "embedding_dimension": 256,
+    "feed_forward_dim": 1024,
+    "dropout": 0.0,
+    "pre_norm": true
+  }
+}

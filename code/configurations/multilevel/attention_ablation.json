@@ -1,0 +1,64 @@
+{
+  "_readme": "Attention ablation: what does self-attention buy in HoT? Architectures trained from scratch under an IDENTICAL protocol so differences are attributable to architecture alone. hot = full model (control; on alley/ideal this should reproduce the published 52.30 dB and is the run's built-in validation -- it completes first). hot_no_attn = ONLY the self-attention sublayers neutered (1,052,672 params); the feed-forward networks, layer norms, residuals, patching and positional embedding all remain. This is the variant that answers R1.5. hot_no_encoder = the whole TransformerEncoder replaced by nn.Identity() (3,159,040 params, of which attention is only 33% and the FFNs are 67%). Supports the 'the encoder is 1.6% of the model' framing but does NOT isolate attention -- do not report it as an attention ablation. mlp = a PURE MLP, no patching / positional encoding / tokens: Flatten -> Linear(1e6,64) -> GELU -> Linear(64,2e6) -> reshape; 194,000,064 params = 0.99x HoT, parameter-matched by construction. Protocol matches patch500_B1_multilevel_training_1000x1000.py (10000 epochs, lr 1e-4, lr *= 0.95 every 1000, same loss and target prep). Set config_file = 'attention_ablation' in attention_ablation.py.",
+  "paths": {
+    "save_base": [
+      "results/Self-Attention/mlp_ablation"
+    ],
+    "image_files": [
+      "targets"
+    ]
+  },
+  "dataset_name": "Attention Ablation",
+  "experiment": {
+    "description": "Attention ablation, per-target simulation, ideal physics only: full HoT (control, should reproduce the published 52.30 dB on alley) vs HoT with the self-attention sublayers neutered (-1,052,672 params, FFNs retained) vs HoT with the whole encoder removed (-3,159,040) vs a parameter-matched pure MLP (194,000,064). Identical protocol across all four, so differences are attributable to architecture alone.",
+    "overwrite": false
+  },
+  "run": {
+    "_comment": "architectures: any subset, in run order. hot stays first -- it is the control AND the validation, since alley/ideal should land near the published 52.30 dB and the loop order (condition -> target -> architecture) makes it the first run to finish. Drop hot_no_encoder if runtime is tight; hot_no_attn is the one R1.5 needs. Five targets to start; expand to 18 once the picture is clear. For a plumbing check set epochs to 50 and print_every to 10. BUDGET: 4 archs x 5 targets x 1 condition x 10000 = 200,000 epochs (150,000 without hot_no_encoder), comparable to the FNO suite's 165,000.",
+    "height": 1000,
+    "width": 1000,
+    "targets": [
+      "alley",
+      "cat",
+      "street",
+      "flower",
+      "moon"
+    ],
+    "architectures": [
+      "hot",
+      "hot_no_attn",
+      "hot_no_encoder",
+      "mlp"
+    ],
+    "print_every": 500
+  },
+  "architecture": {
+    "_comment": "HoT settings copied verbatim from patch500_B1_multilevel_training_1000x1000.json so `hot` reproduces the published model exactly. mlp_hidden=64 is NOT tuned: it is the bottleneck width that makes the pure MLP parameter-matched (1e6*64 + 64*2e6 + biases = 194,000,064 vs 195,660,320 = 0.99x). What that forces is the point: the same ~64M parameters buy a 1024-dim bottleneck WITH patching (Linear(250000,256) shared across 4 patches) but only 64 dims without it (Linear(1e6,64) used once) -- a 16x difference, because patching both shares the weight and shrinks each input. Matching 1024 dims without patching needs 3.07 BILLION params (~34 GB). Report this regardless of how the PSNRs land.",
+    "global_patch": 500,
+    "embedding_dimension": 256,
+    "heads": 16,
+    "layers": 4,
+    "feed_forward_dim": 1024,
+    "dropout": 0.0,
+    "pre_norm": true,
+    "mlp_hidden": 64
+  },
+  "hyperparameters": {
+    "_comment": "Identical to the published per-target simulation protocol. All architectures share the learning rate deliberately -- a per-architecture LR would confound 'attention helps' with 'attention was tuned better'. If the MLP looks LR-limited rather than capacity-limited, that is a separate probe, not a change to make silently here.",
+    "epochs": 10000,
+    "learning_rate": 0.0001,
+    "weight_decay": 0.0001,
+    "lr_decay_every": 1000,
+    "lr_decay_factor": 0.95
+  },
+  "conditions": [
+    {
+      "physics_name": "ideal",
+      "pad_factor": 1,
+      "apply_sinc": false,
+      "fill_factor": 1,
+      "fill_is_areal": true,
+      "_comment": "ideal ONLY. faithful (pad_factor=2) was removed deliberately: the claim here is architectural and the comparison is internal to this table, so one physics condition settles it. faithful would also have cost far more than half the runtime -- pad_factor=2 puts the FFT on a 2000x2000 grid, 4x the pixels. The published 52.30 dB reference is an ideal-condition number, so this is also the condition where `hot` can be validated."
+    }
+  ]
+}

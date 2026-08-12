@@ -1,0 +1,74 @@
+{
+  "paths": {
+    "save_base": [
+      "results/Self-Attention/multilevel/experiments/batched_sail"
+    ],
+    "image_files": [
+      "targets"
+    ],
+    "exposure_settings": [
+      "code/configurations/citl/exposure_settings.json"
+    ]
+  },
+  "dataset_name": "Batched SAIL Dataset",
+  "experiment": {
+    "description": "Batched SAIL: ONE shared SAIL transformer trained jointly across all targets in exposure_settings.json, one optimizer step per target per epoch, straight-through camera feedback.",
+    "overwrite": false
+  },
+  "hardware": {
+    "slm_shape": [
+      1080,
+      1920
+    ],
+    "dc_radius": 20,
+    "dc_auto_center": false,
+    "dc_center": [
+      495,
+      510
+    ],
+    "settle_time_s": 0.3,
+    "capture_timeout_s": 15.0,
+    "dll_path": "C:/path/to/EDSDK.dll",
+    "calibration_mode": "manual",
+    "manual_alignment": {
+      "x0": 1083,
+      "y0": 129,
+      "w": 3267,
+      "h": 3265,
+      "rotation_deg": -0.06
+    }
+  },
+  "run": {
+    "height": 1000,
+    "width": 1000,
+    "lambda_sim": 0.1,
+    "save_all_epoch_pngs": false
+  },
+  "hyperparameters": {
+    "learning_rate": 0.0001,
+    "epochs": 750,
+    "coarse_patch": 500,
+    "heads": 16,
+    "layers": 4,
+    "embedding_dimension": 256,
+    "feed_forward_dim": 1024,
+    "dropout": 0.0,
+    "pre_norm": true
+  },
+  "conditions": [
+    {
+      "physics_name": "ideal",
+      "pad_factor": 1,
+      "apply_sinc": false,
+      "fill_factor": 1,
+      "fill_is_areal": true
+    },
+    {
+      "physics_name": "faithful",
+      "pad_factor": 2,
+      "apply_sinc": true,
+      "fill_factor": 0.91,
+      "fill_is_areal": true
+    }
+  ]
+}

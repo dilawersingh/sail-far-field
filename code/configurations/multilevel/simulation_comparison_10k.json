@@ -1,0 +1,135 @@
+{
+  "paths": {
+    "multiple_images": [
+      "targets"
+    ]
+  },
+  "dataset_name": "Synthetic - PyTorch",
+  "experiment": {
+    "name": "simulation_comparison_10k (Transformer GS GD)",
+    "training_type": "Transformer",
+    "description": "Matched-compute convergence sweep. Runs GS and GD to 10,000 iterations, the same budget the transformer receives in training (10,000 epochs), across every combination of forward model (ideal, faithful) and target formulation (amplitude, intensity). Motivation: the published comparison reports GS/GD at 750 iterations, and the existing sweep shows GD still gaining +4.42 dB between 750 and 1500 (more than the +2.53 it gained from 500 to 750), i.e. it had not converged where it was stopped. The review challenged exactly this point. 750 remains the primary reported operating point, being already roughly 3x typical practice in the CGH literature; this sweep exists to show the conclusion is not an artefact of stopping early, and to supply the compute-versus-quality curve. NOTE: each entry in iterations_list is an INDEPENDENT run from a random initialisation, not a checkpoint along one trajectory, so cost is the SUM of the list.",
+    "comparison_mode": "multilevel",
+    "frame_sampling_rate": 30,
+    "fps_gif": 4,
+    "overwrite": false,
+    "make_video": false,
+    "make_vortices_video": false,
+    "load_model": true,
+    "target_formulations": [
+      "amplitude",
+      "intensity"
+    ]
+  },
+  "conditions": [
+    {
+      "name": "ideal",
+      "save": [
+        "results/Self-Attention/multilevel/simulations/simulation_comparison_ideal_10k"
+      ],
+      "model_base_path": [
+        "results/Self-Attention/multilevel/simulations/per_target/1000px_P500_B1_ideal"
+      ],
+      "physics": {
+        "pad_factor": 1,
+        "apply_sinc": false,
+        "fill_factor": 1,
+        "fill_is_areal": true
+      }
+    },
+    {
+      "name": "faithful",
+      "save": [
+        "results/Self-Attention/multilevel/simulations/simulation_comparison_faithful_10k"
+      ],
+      "model_base_path": [
+        "results/Self-Attention/multilevel/simulations/per_target/1000px_P500_B1_faithful"
+      ],
+      "physics": {
+        "pad_factor": 2,
+        "apply_sinc": true,
+        "fill_factor": 0.91,
+        "fill_is_areal": true
+      }
+    }
+  ],
+  "slm_shape": [
+    1000,
+    1000
+  ],
+  "gs": {
+    "iterations_list": [
+      10,
+      25,
+      50,
+      75,
+      100,
+      200,
+      250,
+      300,
+      500,
+      750,
+      1500,
+      3000,
+      5000,
+      7500,
+      10000
+    ],
+    "init_phase": "random",
+    "lowpass": false,
+    "lpf_sigma": 0.08,
+    "add_carrier": false,
+    "show": false
+  },
+  "gd": {
+    "iterations_list": [
+      10,
+      25,
+      50,
+      75,
+      100,
+      200,
+      250,
+      300,
+      500,
+      750,
+      1500,
+      3000,
+      5000,
+      7500,
+      10000
+    ],
+    "init_phase": "random",
+    "lr": 0.03,
+    "optimizer_name": "adam",
+    "loss_type": "mse_sum",
+    "tv_weight": 0.0,
+    "lowpass": false,
+    "lpf_sigma": 0.08,
+    "add_carrier": false,
+    "show": false,
+    "log_every": false
+  },
+  "hyperparameters": {
+    "height": 1000,
+    "width": 1000,
+    "coarse_patch": 500,
+    "heads": 16,
+    "layers": 4,
+    "subselection": 1,
+    "embedding_dimension": 256,
+    "feed_forward_dim": 1024,
+    "dropout": 0.0,
+    "pre_norm": true
+  },
+  "consistency_check": {
+    "note": "The ideal + amplitude condition at 750 iterations must reproduce the existing sweep. If these do not match to within run-to-run noise, stop and debug before trusting any point above 750.",
+    "condition": "ideal",
+    "formulation": "amplitude",
+    "iterations": 750,
+    "expected_mean_psnr": {
+      "gd": 35.64,
+      "gs": 33.64
+    }
+  }
+}

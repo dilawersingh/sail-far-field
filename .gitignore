@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# The data lives in the Apollo deposit, not here. If you point SAIL_ROOT at
+# this clone and run the analysis, these are what it would write.
+results/
+output/
+targets/
+
+# OS and editor
+.DS_Store
+Thumbs.db
+.vscode/
+*.code-workspace
